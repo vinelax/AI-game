@@ -1,0 +1,6 @@
+pip
+pytest
+wheel
+setuptools
+poetry
+tk

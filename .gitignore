@@ -1,0 +1,25 @@
+## Python ##
+__pycache__/
+
+## Distribution / Packaging ##
+.Python
+build/
+eggs/
+wheels/
+share/python-wheels/
+var/
+*.egg
+*.egg-info/
+
+##  Environments ##
+.env
+.venv
+env/
+venv/
+ENV/
+
+## Pycharm ##
+.idea/
+
+## Pyhton patch ##
+poetry.toml
