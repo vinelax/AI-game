@@ -17,6 +17,12 @@ def main():
     hello = tk.Label(text= list)
     hello.pack(pady = 30)
 
+    hello = tk.Label(text="spēlētāja kārta")
+    hello.pack(pady=50)
+
+    hello = tk.Label(text="uzvaretājs")
+    hello.pack(pady=50)
+
     tk.mainloop()
 
 
