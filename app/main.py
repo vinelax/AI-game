@@ -1,25 +1,66 @@
 import tkinter as tk
+import tkinter.messagebox
 import random
 
-def main():
+def choice_window():
+    def izvelies_starta_speletaju():
+        choice = var.get()
+        if choice == 1:
+            return "Spēlētājs 1"
+        elif choice == 2:
+            return "Spēlētājs 2"
+        else:
+            tkinter.messagebox.showerror("Kļūda", "Lūdzu izvēlies spēlētāju lai sāktu spēli.")
+
+    def start_game():
+        starting_player = izvelies_starta_speletaju()
+        if starting_player:
+            tkinter.messagebox.showinfo("Starta Spēlētājs", f"Spēli sāks {starting_player}.")
+            window.destroy()
+
+    window = tk.Tk()
+    window.title("Izvēlies Starta Spēlētāju")
+
+    label = tk.Label(window, text="Izvēlies kurš no spēlētājiem sāks spēli:")
+    label.pack()
+
+    var = tk.IntVar()
+
+    player1_button = tk.Radiobutton(window, text="Spēlētājs 1", variable=var, value=1)
+    player1_button.pack()
+
+    player2_button = tk.Radiobutton(window, text="Spēlētājs 2", variable=var, value=2)
+    player2_button.pack()
+
+    start_button = tk.Button(window, text="Sākt Spēli", command=start_game)
+    start_button.pack()
+
+    window.mainloop()
+
+def game():
     window = tk.Tk()
     window.title("Spēle")
+    window.title("Choose Starting Player")
     window.geometry("400x450")
+
+    label = tk.Label(window, text="Choose which player will start the game:")
+    label.pack()
 
     current_turn = [1]  # Uzglabā informāciju par pašreizējo spēlētāju iekš saraksta, lai būtu iespējama modificēšana
     player_points = [80, 80]  # Sākotnējie punkti abiem spēlētājiem
+
 
     #Funkcija jaunas spēles uzsākšanai, visu elementu atjaunošana uz sākuma stāvokli
     def new_game():
         global numbers_list
         numbers_list = []
-        ok_button.pack()   
-        player_points = [80, 80]  
-        winner_label.config(text="Uzvarētājs:")  
-        num_input.config(state="normal")  
-        player_input.config(state="disabled")  
-        numbers_label.config(text="")  
-        player1_points_label.config(text="Spēlētājs 1 punkti: 80")  
+        ok_button.pack()
+        player_points = [80, 80]
+        winner_label.config(text="Uzvarētājs:")
+        num_input.config(state="normal")
+        player_input.config(state="disabled")
+        numbers_label.config(text="")
+        player1_points_label.config(text="Spēlētājs 1 punkti: 80")
         player2_points_label.config(text="Spēlētājs 2 punkti: 80")
         new_game_button.pack_forget()
 
@@ -34,10 +75,10 @@ def main():
             player1_points_label.config(text=f"Spēlētājs 1 punkti: {player_points[0]}")
             player2_points_label.config(text=f"Spēlētājs 2 punkti: {player_points[1]}")
             winner_check()
-            
+
             # Pārslēdzam kārtu uz nākamo spēlētāju
             current_turn[0] = 2 if current_turn[0] == 1 else 1
-            
+
             # Atjauninām kārtas etiķeti
             turn_label.config(text=f"Spēlētāja kārta: {current_turn[0]}")
             player_input.delete(0, tk.END)
@@ -55,19 +96,16 @@ def main():
                 winner = "Spēlētājs 2"
             else:
                 winner = "Neizšķirts"
-        
+
             winner_label.config(text=f"Uzvarētājs: {winner}")
-            new_game_button.pack() 
-
-
-    
+            new_game_button.pack()
 
     instructions_label = tk.Label(window, text="Izvēlies skaitli no 15-25")
     instructions_label.pack()
-    
+
     num_input = tk.Entry(window)
     num_input.pack()
-    
+
     def get_input():
         try:
             length = int(num_input.get())
@@ -80,13 +118,13 @@ def main():
                 turn_label.config(text="Spēlētāja kārta: 1")
                 winner_label.config(text="Uzvarētājs: ")
                 player_input.config(state="normal")
-                ok_button.pack_forget() 
-                num_input.config(state="disabled")  
+                ok_button.pack_forget()
+                num_input.config(state="disabled")
             else:
                 numbers_label.config(text="Garumam jābūt diapazonā no 15 līdz 25")
         except ValueError:
             numbers_label.config(text="Lūdzu ievadiet skaitli")
-    
+
     ok_button = tk.Button(window, text="OK", command=get_input)
     ok_button.pack()
 
@@ -118,8 +156,9 @@ def main():
 
     tk.mainloop()
 
-
-
+def main():
+    choice_window()
+    game()
 
 if __name__ == '__main__':
     main()
