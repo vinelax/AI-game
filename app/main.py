@@ -1,9 +1,10 @@
 import tkinter as tk
 import tkinter.messagebox
 import random
+import SpelesKoks_MinMaks_AlfaBeta
 
 
-def choice_window():
+def choose_player_window():
     def izvelies_starta_speletaju():
         choice = var.get()
         if choice == 1:
@@ -35,6 +36,43 @@ def choice_window():
     start_button.pack()
 
     window.mainloop()
+
+
+def choose_algorithm():
+    def start_game():
+        sp = SpelesKoks_MinMaks_AlfaBeta.Speles_koks()
+
+        algorithm = var.get()
+        if algorithm == 1:
+            tkinter.messagebox.showinfo("Algoritms izvēlēts", "Tiks lietots Minimaksa algoritms.")
+            SpelesKoks_MinMaks_AlfaBeta.minimaks(sp.virsotnu_kopa, sp.loku_kopa)
+            window.destroy()
+        elif algorithm == 2:
+            tkinter.messagebox.showinfo("Algoritms izvēlēts", "Tiks lietots Alpha-beta algoritms.")
+            SpelesKoks_MinMaks_AlfaBeta.alfabeta(sp.virsotnu_kopa, sp.loku_kopa, 0, float('-inf'), float('inf'))
+            window.destroy()
+        else:
+            tkinter.messagebox.showerror("Kļūda", "Izvēlies algoritmu lai sāktu spēli.")
+
+    window = tk.Tk()
+    window.title("Choose Algorithm")
+
+    label = tk.Label(window, text="Izvēlies algoritmu priekš datora gājieniem:")
+    label.pack()
+
+    var = tk.IntVar()
+
+    minimax_button = tk.Radiobutton(window, text="Minimaks", variable=var, value=1)
+    minimax_button.pack()
+
+    alphabeta_button = tk.Radiobutton(window, text="Alpha-Beta", variable=var, value=2)
+    alphabeta_button.pack()
+
+    start_button = tk.Button(window, text="Sākt spēli", command=start_game)
+    start_button.pack()
+
+    window.mainloop()
+
 
 def game():
     window = tk.Tk()
@@ -170,7 +208,8 @@ def game():
 
 
 def main():
-    choice_window()
+    choose_player_window()
+    choose_algorithm()
     game()
 
 
