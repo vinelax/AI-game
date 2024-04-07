@@ -2,13 +2,14 @@ import tkinter as tk
 import tkinter.messagebox
 import random
 
+
 def choice_window():
     def izvelies_starta_speletaju():
         choice = var.get()
         if choice == 1:
-            return "Spēlētājs 1"
+            return "Lietotājs"
         elif choice == 2:
-            return "Spēlētājs 2"
+            return "Dators"
         else:
             tkinter.messagebox.showerror("Kļūda", "Lūdzu izvēlies spēlētāju lai sāktu spēli.")
 
@@ -23,13 +24,11 @@ def choice_window():
 
     label = tk.Label(window, text="Izvēlies kurš no spēlētājiem sāks spēli:")
     label.pack()
-
     var = tk.IntVar()
 
-    player1_button = tk.Radiobutton(window, text="Spēlētājs 1", variable=var, value=1)
+    player1_button = tk.Radiobutton(window, text="Lietotājs", variable=var, value=1)
     player1_button.pack()
-
-    player2_button = tk.Radiobutton(window, text="Spēlētājs 2", variable=var, value=2)
+    player2_button = tk.Radiobutton(window, text="Dators", variable=var, value=2)
     player2_button.pack()
 
     start_button = tk.Button(window, text="Sākt Spēli", command=start_game)
@@ -43,12 +42,8 @@ def game():
     window.title("Choose Starting Player")
     window.geometry("400x450")
 
-    label = tk.Label(window, text="Choose which player will start the game:")
-    label.pack()
-
     current_turn = [1]  # Uzglabā informāciju par pašreizējo spēlētāju iekš saraksta, lai būtu iespējama modificēšana
     player_points = [80, 80]  # Sākotnējie punkti abiem spēlētājiem
-
 
     #Funkcija jaunas spēles uzsākšanai, visu elementu atjaunošana uz sākuma stāvokli
     def new_game():
@@ -60,8 +55,8 @@ def game():
         num_input.config(state="normal")
         player_input.config(state="disabled")
         numbers_label.config(text="")
-        player1_points_label.config(text="Spēlētājs 1 punkti: 80")
-        player2_points_label.config(text="Spēlētājs 2 punkti: 80")
+        player1_points_label.config(text="Lietotājs punkti: 80")
+        player2_points_label.config(text="Dators punkti: 80")
         new_game_button.pack_forget()
 
     def update_points():
@@ -72,8 +67,8 @@ def game():
             global numbers_list
             numbers_list.remove(num)
             numbers_label.config(text = str(numbers_list))
-            player1_points_label.config(text=f"Spēlētājs 1 punkti: {player_points[0]}")
-            player2_points_label.config(text=f"Spēlētājs 2 punkti: {player_points[1]}")
+            player1_points_label.config(text=f"Lietotājs punkti: {player_points[0]}")
+            player2_points_label.config(text=f"Dators punkti: {player_points[1]}")
             winner_check()
 
             # Pārslēdzam kārtu uz nākamo spēlētāju
@@ -81,9 +76,26 @@ def game():
 
             # Atjauninām kārtas etiķeti
             turn_label.config(text=f"Spēlētāja kārta: {current_turn[0]}")
+            if current_turn[0] == 2:
+                computer_turn()
             player_input.delete(0, tk.END)
         else:
             turn_label.config(text="Ievadiet skaitli: 1, 2 vai 3")
+
+    def computer_turn():
+        computer_choice = random.choice([1, 2, 3])
+        player_points[1] -= computer_choice
+        numbers_list.remove(computer_choice)
+        numbers_label.config(text=str(numbers_list))
+        player1_points_label.config(text=f"Lietotājs punkti: {player_points[0]}")
+        player2_points_label.config(text=f"Dators punkti: {player_points[1]}")
+        winner_check()
+
+        # Pārslēdzam kārtu uz nākamo spēlētāju
+        current_turn[0] = 1
+
+        # Atjauninām kārtas etiķeti
+        turn_label.config(text=f"Spēlētāja kārta: {current_turn[0]}")
 
     #Funkcija, kas nosaka uzvarētāju
     def winner_check():
@@ -91,9 +103,9 @@ def game():
         if not numbers_list:
             winner = None
             if player_points[0] > player_points[1]:
-                winner = "Spēlētājs 1"
+                winner = "Lietotājs"
             elif player_points[0] < player_points[1]:
-                winner = "Spēlētājs 2"
+                winner = "Dators"
             else:
                 winner = "Neizšķirts"
 
@@ -113,8 +125,8 @@ def game():
                 global numbers_list
                 numbers_list = [random.randint(1, 3) for _ in range(length)]
                 numbers_label.config(text=str(numbers_list))
-                player1_points_label.config(text="Spēlētājs 1 punkti: 80")
-                player2_points_label.config(text="Spēlētājs 2 punkti: 80")
+                player1_points_label.config(text="Lietotājs punkti: 80")
+                player2_points_label.config(text="Dators punkti: 80")
                 turn_label.config(text="Spēlētāja kārta: 1")
                 winner_label.config(text="Uzvarētājs: ")
                 player_input.config(state="normal")
@@ -139,10 +151,10 @@ def game():
     player_input.pack()
     player_input.config(state="disabled")
 
-    player1_points_label = tk.Label(window, text="Spēlētājs 1 punkti: 80")
+    player1_points_label = tk.Label(window, text="Lietotājs punkti: 80")
     player1_points_label.pack(pady=10)
 
-    player2_points_label = tk.Label(window, text="Spēlētājs 2 punkti: 80")
+    player2_points_label = tk.Label(window, text="Dators punkti: 80")
     player2_points_label.pack(pady=10)
 
     move_button = tk.Button(window, text="Veikt gājienu", command=update_points)
@@ -156,9 +168,11 @@ def game():
 
     tk.mainloop()
 
+
 def main():
     choice_window()
     game()
+
 
 if __name__ == '__main__':
     main()
