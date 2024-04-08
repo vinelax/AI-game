@@ -32,7 +32,7 @@ def choose_player_window():
     player2_button = tk.Radiobutton(window, text="Dators", variable=var, value=2)
     player2_button.pack()
 
-    start_button = tk.Button(window, text="Sākt Spēli", command=start_game)
+    start_button = tk.Button(window, text="Turpināt", command=start_game)
     start_button.pack()
 
     window.mainloop()
