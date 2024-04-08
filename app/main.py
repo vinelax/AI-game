@@ -40,7 +40,7 @@ def choose_player_window():
 
 def choose_algorithm():
     def start_game():
-        sp = SpelesKoks_MinMaks_AlfaBeta.Speles_koks()
+        sp = SpelesKoks_MinMaks_AlfaBeta.sp_gen()
 
         algorithm = var.get()
         if algorithm == 1:
