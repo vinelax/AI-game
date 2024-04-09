@@ -2,13 +2,13 @@ import tkinter as tk
 import tkinter.messagebox
 import random
 import SpelesKoks_MinMaks_AlfaBeta
+import time
 
-# Funkcija, kas ļauj izvēlēties, vai sāks spēlētājs vai dators
+
 def choose_player_window():
-    # Iekšējā funkcija, kas tiek izsaukta, kad tiek nospiesta poga "Turpināt"
     def izvelies_starta_speletaju():
         global choiceplayer
-        choiceplayer = var.get() # Izvēlētās vērtības saglabāšāna
+        choiceplayer = var.get()
         if choiceplayer == 1:
             return "Lietotājs"
         elif choiceplayer == 2:
@@ -16,18 +16,15 @@ def choose_player_window():
         else:
             tkinter.messagebox.showerror("Kļūda", "Lūdzu izvēlies spēlētāju lai sāktu spēli.")
 
-    # Funkcija, kas sāk spēli atkarībā no izvēlētā spēlētāja
     def start_game():
         starting_player = izvelies_starta_speletaju()
         if starting_player:
             tkinter.messagebox.showinfo("Starta Spēlētājs", f"Spēli sāks {starting_player}.")
             window.destroy()
 
-    # Izveido jaunu logu
     window = tk.Tk()
     window.title("Izvēlies Starta Spēlētāju")
 
-    # Izveido izvēles pogas
     label = tk.Label(window, text="Izvēlies kurš no spēlētājiem sāks spēli:")
     label.pack()
     var = tk.IntVar()
@@ -37,20 +34,17 @@ def choose_player_window():
     player2_button = tk.Radiobutton(window, text="Dators", variable=var, value=2)
     player2_button.pack()
 
-    # Izveido pogu "Turpināt"
     start_button = tk.Button(window, text="Turpināt", command=start_game)
     start_button.pack()
 
-    # Sāk logu izpildi
     window.mainloop()
 
-# Funkcija, kas ļauj izvēlēties algoritmu
+
 def choose_algorithm():
-    # Iekšējā funkcija, kas tiek izsaukta, kad tiek nospiesta poga "Sākt spēli"
     def start_game():
         # sp = SpelesKoks_MinMaks_AlfaBeta.sp_gen()
         global algorithm
-        algorithm = var.get() # Saglabā izvēlēto algoritmu
+        algorithm = var.get()
         if algorithm == 1:
             tkinter.messagebox.showinfo("Algoritms izvēlēts", "Tiks lietots Minimaksa algoritms.")
             # SpelesKoks_MinMaks_AlfaBeta.minimaks(sp.virsotnu_kopa, sp.loku_kopa)
@@ -62,7 +56,6 @@ def choose_algorithm():
         else:
             tkinter.messagebox.showerror("Kļūda", "Izvēlies algoritmu lai sāktu spēli.")
 
-    # Izveido jaunu logu
     window = tk.Tk()
     window.title("Choose Algorithm")
 
@@ -71,31 +64,26 @@ def choose_algorithm():
 
     var = tk.IntVar()
 
-    # Izveido algoritmu izvēles pogas
     minimax_button = tk.Radiobutton(window, text="Minimaks", variable=var, value=1)
     minimax_button.pack()
 
     alphabeta_button = tk.Radiobutton(window, text="Alpha-Beta", variable=var, value=2)
     alphabeta_button.pack()
 
-    # Izveido pogu "Sākt spēli"
     start_button = tk.Button(window, text="Sākt spēli", command=start_game)
     start_button.pack()
 
-    # Sāk logu izpildi
     window.mainloop()
 
-# Galvenā spēles funkcija
+
 def game():
-    # Izveido jaunu logu
     window = tk.Tk()
     window.title("Game")
     window.geometry("400x450")
 
-    current_turn = [1]  # Sākuma kārta
-    player_points = [80, 80]  # Sākuma punkti
+    current_turn = [1]  
+    player_points = [80, 80]  
 
-    # Funkcija, kas sāk jaunu spēli
     def new_game():
         global numbers_list
         numbers_list = []
@@ -111,7 +99,6 @@ def game():
         player2_points_label.config(text="Dators punkti: 80")
         new_game_button.pack_forget()
 
-    # Funkcija, kas atjauno punktus un pārbauda uzvarētāju
     def update_points():
         # Tā kā current_turn tagad ir saraksts, mēs izmantojam current_turn[0]
         num = int(player_input.get())
@@ -135,8 +122,10 @@ def game():
         else:
             turn_label.config(text="Ievadiet skaitli: 1, 2 vai 3")
 
-    #funkcijas kas nosaka datora gājienu pēc izvēlētā algoritma
     def computer_turn():
+    
+        start_time = time.perf_counter()  # Record start time
+
         virkne = ''
         numbers_list1 = numbers_list
         numbers_list1.sort()  # Sort the list in-place
@@ -152,17 +141,20 @@ def game():
         for x in sp.virsotnu_kopa[1:]:
             if (sp.virsotnu_kopa[0].virs_kval == x.virs_kval):
                 choice = sp.virsotnu_kopa[0].p1 - x.p1
-                #print(sp.virsotnu_kopa[0].virkne, x.virkne)
+                print(sp.virsotnu_kopa[0].virkne, x.virkne)
                 break
 
-        #print(choice)
+        end_time = time.perf_counter()  # Record end time
+        execution_time = (end_time - start_time) * 1000  # Convert to milliseconds
+
+        print(f"Dators gājienu veica {execution_time:.2f} milisekundēs.")
+
         computer_choice = choice
         player_points[1] -= computer_choice
         numbers_list.remove(computer_choice)
         numbers_label.config(text=str(numbers_list))
         player1_points_label.config(text=f"Lietotājs punkti: {player_points[0]}")
         player2_points_label.config(text=f"Dators punkti: {player_points[1]}")
-        # Funkcija, kas nosaka uzvarētāju
         winner_check()
 
         # Pārslēdzam kārtu uz nākamo spēlētāju
@@ -170,6 +162,7 @@ def game():
 
         # Atjauninām kārtas etiķeti
         turn_label.config(text=f"Spēlētāja kārta: {current_turn[0]}")
+
 
     #Funkcija, kas nosaka uzvarētāju
     def winner_check():
@@ -192,7 +185,6 @@ def game():
     num_input = tk.Entry(window)
     num_input.pack()
 
-    #funkcija, kas pēc lietotāja ievades ģenerē skaitļu virkni
     def get_input():
         try:
             length = int(num_input.get())
@@ -214,7 +206,6 @@ def game():
         except ValueError:
             numbers_label.config(text="Lūdzu ievadiet skaitli")
 
-    #Grafiskās saskarnes elementi - pogas, uzraksti
     ok_button = tk.Button(window, text="OK", command=get_input)
     ok_button.pack()
 
@@ -246,7 +237,7 @@ def game():
 
     tk.mainloop()
 
-# Galvenā funkcija, kas izsauc visus pārējos soļus
+
 def main():
     choose_player_window()
     choose_algorithm()
