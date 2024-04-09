@@ -42,16 +42,13 @@ def choose_player_window():
 
 def choose_algorithm():
     def start_game():
-        # sp = SpelesKoks_MinMaks_AlfaBeta.sp_gen()
         global algorithm
         algorithm = var.get()
         if algorithm == 1:
             tkinter.messagebox.showinfo("Algoritms izvēlēts", "Tiks lietots Minimaksa algoritms.")
-            # SpelesKoks_MinMaks_AlfaBeta.minimaks(sp.virsotnu_kopa, sp.loku_kopa)
             window.destroy()
         elif algorithm == 2:
             tkinter.messagebox.showinfo("Algoritms izvēlēts", "Tiks lietots Alpha-beta algoritms.")
-            # SpelesKoks_MinMaks_AlfaBeta.alfabeta(sp.virsotnu_kopa, sp.loku_kopa, 0, float('-inf'), float('inf'))
             window.destroy()
         else:
             tkinter.messagebox.showerror("Kļūda", "Izvēlies algoritmu lai sāktu spēli.")
