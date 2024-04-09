@@ -77,21 +77,21 @@ def choose_algorithm():
 
 def game():
     window = tk.Tk()
-    window.title("Spēle")
     window.title("Game")
     window.geometry("400x450")
 
-    current_turn = [1]  # Uzglabā informāciju par pašreizējo spēlētāju iekš saraksta, lai būtu iespējama modificēšana
-    player_points = [80, 80]  # Sākotnējie punkti abiem spēlētājiem
+    current_turn = [1]  
+    player_points = [80, 80]  
 
-    #Funkcija jaunas spēles uzsākšanai, visu elementu atjaunošana uz sākuma stāvokli
     def new_game():
         global numbers_list
         numbers_list = []
-        ok_button.pack()
+        # Ensure OK button is properly placed each time a new game is started.
+        ok_button.pack(after=num_input)  # Adjust placement here if necessary.
         player_points = [80, 80]
         winner_label.config(text="Uzvarētājs:")
         num_input.config(state="normal")
+        num_input.delete(0, tk.END)  # Clearing the input field
         player_input.config(state="disabled")
         numbers_label.config(text="")
         player1_points_label.config(text="Lietotājs punkti: 80")
