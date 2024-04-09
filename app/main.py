@@ -6,10 +6,11 @@ import SpelesKoks_MinMaks_AlfaBeta
 
 def choose_player_window():
     def izvelies_starta_speletaju():
-        choice = var.get()
-        if choice == 1:
+        global choiceplayer
+        choiceplayer = var.get()
+        if choiceplayer == 1:
             return "Lietotājs"
-        elif choice == 2:
+        elif choiceplayer == 2:
             return "Dators"
         else:
             tkinter.messagebox.showerror("Kļūda", "Lūdzu izvēlies spēlētāju lai sāktu spēli.")
@@ -40,16 +41,16 @@ def choose_player_window():
 
 def choose_algorithm():
     def start_game():
-        sp = SpelesKoks_MinMaks_AlfaBeta.sp_gen()
-
+        # sp = SpelesKoks_MinMaks_AlfaBeta.sp_gen()
+        global algorithm
         algorithm = var.get()
         if algorithm == 1:
             tkinter.messagebox.showinfo("Algoritms izvēlēts", "Tiks lietots Minimaksa algoritms.")
-            SpelesKoks_MinMaks_AlfaBeta.minimaks(sp.virsotnu_kopa, sp.loku_kopa)
+            # SpelesKoks_MinMaks_AlfaBeta.minimaks(sp.virsotnu_kopa, sp.loku_kopa)
             window.destroy()
         elif algorithm == 2:
             tkinter.messagebox.showinfo("Algoritms izvēlēts", "Tiks lietots Alpha-beta algoritms.")
-            SpelesKoks_MinMaks_AlfaBeta.alfabeta(sp.virsotnu_kopa, sp.loku_kopa, 0, float('-inf'), float('inf'))
+            # SpelesKoks_MinMaks_AlfaBeta.alfabeta(sp.virsotnu_kopa, sp.loku_kopa, 0, float('-inf'), float('inf'))
             window.destroy()
         else:
             tkinter.messagebox.showerror("Kļūda", "Izvēlies algoritmu lai sāktu spēli.")
@@ -77,7 +78,7 @@ def choose_algorithm():
 def game():
     window = tk.Tk()
     window.title("Spēle")
-    window.title("Choose Starting Player")
+    window.title("Game")
     window.geometry("400x450")
 
     current_turn = [1]  # Uzglabā informāciju par pašreizējo spēlētāju iekš saraksta, lai būtu iespējama modificēšana
@@ -121,7 +122,26 @@ def game():
             turn_label.config(text="Ievadiet skaitli: 1, 2 vai 3")
 
     def computer_turn():
-        computer_choice = random.choice([1, 2, 3])
+        virkne = ''
+        numbers_list1 = numbers_list
+        numbers_list1.sort()  # Sort the list in-place
+        virknelist = numbers_list1[:]  # Create a copy of the sorted list
+        for num in virknelist:
+            virkne += str(num)
+        sp = SpelesKoks_MinMaks_AlfaBeta.sp_gen(virkne, player_points[0], player_points[1])
+
+        if algorithm == 1:
+            sp = SpelesKoks_MinMaks_AlfaBeta.minimaks(sp)
+        elif algorithm == 2:
+            SpelesKoks_MinMaks_AlfaBeta.izsauktalfabeta(sp)
+        for x in sp.virsotnu_kopa[1:]:
+            if (sp.virsotnu_kopa[0].virs_kval == x.virs_kval):
+                choice = sp.virsotnu_kopa[0].p1 - x.p1
+                print(sp.virsotnu_kopa[0].virkne, x.virkne)
+                break
+
+        print(choice)
+        computer_choice = choice
         player_points[1] -= computer_choice
         numbers_list.remove(computer_choice)
         numbers_label.config(text=str(numbers_list))
@@ -172,6 +192,8 @@ def game():
                 num_input.config(state="disabled")
             else:
                 numbers_label.config(text="Garumam jābūt diapazonā no 15 līdz 25")
+            if (choiceplayer == 2):
+                computer_turn()
         except ValueError:
             numbers_label.config(text="Lūdzu ievadiet skaitli")
 
