@@ -109,22 +109,22 @@ def gajiena_parbaude(gajiena_tips, generetas_virsotnes, pasreizeja_virsotne):
 
 
 # tiek izsaukts spēles koka konstruktors, lai izveidotu tukšu koku
-def sp_gen():
+def sp_gen(virkne, points1, points2):
     global sp
     sp = Speles_koks()
     # tiek izveidots tukšs ģenerēto virsotņu saraksts
     global generetas_virsotnes
     generetas_virsotnes = []
     # tiek izveidota sākumvirsotne spēles kokā
-    sp.pievienot_virsotni(Virsotne('A1', '111233', 80, 80, 1))
+    sp.pievienot_virsotni(Virsotne('A1', virkne, points1, points2, 1))
     # tiek pievienota pirmā virsotne ģenerēto virsotņu sarakstam
-    generetas_virsotnes.append(['A1', '111233', 80, 80, 1])
+    generetas_virsotnes.append(['A1', virkne, points1, points2, 1])
     # mainīgais, kurš skaita virsotnes
     global j
     j = 2
     # ģenerētā koka dziļuma ierobežojums
     global gen_lim
-    gen_lim = 6
+    gen_lim = 20
     # kamēr nav apskatītas visas saģenerētas virsotnes viena pēc otras
     while len(generetas_virsotnes) > 0 and gen_lim >= generetas_virsotnes[0][4]:
         # par pašreiz apskatāmo virsotni kļūst pirmā virsotne saģenerēto virsotņu sarakstā
@@ -143,7 +143,7 @@ def sp_gen():
 # In[154]:
 
 
-def minimaks(virsotnu_kopa, loku_kopa):
+def minimaks(sp):
     for x in reversed(sp.virsotnu_kopa):  # pārmeklējam no apakšas uz augšu
 
         if x.virkne == "":  # pilns koks
@@ -165,16 +165,16 @@ def minimaks(virsotnu_kopa, loku_kopa):
 
         if x.limenis % 2 == 1:  # minimizētājs
             x.virs_kval = 80
-            for pectec in loku_kopa[x.id]:
-                if virsotnu_kopa[int(pectec[1:]) - 1].virs_kval < x.virs_kval:
-                    x.virs_kval = virsotnu_kopa[int(pectec[1:]) - 1].virs_kval
+            for pectec in sp.loku_kopa[x.id]:
+                if sp.virsotnu_kopa[int(pectec[1:]) - 1].virs_kval < x.virs_kval:
+                    x.virs_kval = sp.virsotnu_kopa[int(pectec[1:]) - 1].virs_kval
         else:
             x.virs_kval = -80  # maksimizētājs
             for pectec in sp.loku_kopa[x.id]:
-                if virsotnu_kopa[int(pectec[1:]) - 1].virs_kval > x.virs_kval:
-                    x.virs_kval = virsotnu_kopa[int(pectec[1:]) - 1].virs_kval
+                if sp.virsotnu_kopa[int(pectec[1:]) - 1].virs_kval > x.virs_kval:
+                    x.virs_kval = sp.virsotnu_kopa[int(pectec[1:]) - 1].virs_kval
 
-    return virsotnu_kopa[0].virs_kval
+    return sp
 
 
 # minimaks(sp.virsotnu_kopa,sp.loku_kopa)
@@ -182,10 +182,16 @@ def minimaks(virsotnu_kopa, loku_kopa):
 
 # In[155]:
 
-
+def izsauktalfabeta(sp1):
+    global sp 
+    sp = sp1
+    alfabeta(sp.virsotnu_kopa, sp.loku_kopa, 0, float('-inf'), float('inf'))
+    
 def alfabeta(virsotnu_kopa, loku_kopa, index, alpha, beta):
-    if virsotnu_kopa[index].virkne == "":  # rekursijas base case pilnajam kokam
 
+    
+    if virsotnu_kopa[index].virkne == "": #rekursijas base case pilnajam kokam
+        
         if virsotnu_kopa[index].p1 > virsotnu_kopa[index].p2:
             virsotnu_kopa[index].virs_kval = -1
             return -1
@@ -195,36 +201,34 @@ def alfabeta(virsotnu_kopa, loku_kopa, index, alpha, beta):
         else:
             virsotnu_kopa[index].virs_kval = 1
             return 1
-
-    if virsotnu_kopa[index].limenis == gen_lim + 1:  # rekursijas base case nepilnajam kokam
-        if virsotnu_kopa[index].limenis % 2 == 1:  # datora gājiens
-            virsotnu_kopa[index].virs_kval = virsotnu_kopa[index].p2 - virsotnu_kopa[index].p1 + int(
-                virsotnu_kopa[index].virkne[0])  # heiristiska funk.
+        
+    if virsotnu_kopa[index].limenis == gen_lim + 1: #rekursijas base case nepilnajam kokam
+        if virsotnu_kopa[index].limenis%2 == 1: #datora gājiens
+            virsotnu_kopa[index].virs_kval = virsotnu_kopa[index].p2 - virsotnu_kopa[index].p1 + int(virsotnu_kopa[index].virkne[0]) #heiristiska funk.
             return int(virsotnu_kopa[index].virs_kval)
-        else:  # cilvēka gājiens
-            virsotnu_kopa[index].virs_kval = virsotnu_kopa[index].p2 - virsotnu_kopa[index].p1 - int(
-                virsotnu_kopa[index].virkne[0])  # heiristiska funk.
+        else: #cilvēka gājiens
+            virsotnu_kopa[index].virs_kval = virsotnu_kopa[index].p2 - virsotnu_kopa[index].p1 - int(virsotnu_kopa[index].virkne[0]) #heiristiska funk.
             return int(virsotnu_kopa[index].virs_kval)
-
-    if virsotnu_kopa[index].limenis % 2 == 1:  # minimizētājs
+            
+    if virsotnu_kopa[index].limenis%2 == 1: #minimizētājs
         min_eval = float('inf')
         for pectec in loku_kopa[virsotnu_kopa[index].id]:
-            eval = alfabeta(virsotnu_kopa, loku_kopa, int(pectec[1:]) - 1, alpha, beta)
+            eval = alfabeta(virsotnu_kopa, loku_kopa, int(pectec[1:])-1, alpha, beta)
             min_eval = min(min_eval, eval)
             beta = min(beta, eval)
             if beta <= alpha:
                 break  # Alpha nogriešana
         virsotnu_kopa[index].virs_kval = min_eval
         return min_eval
-    else:  # maksimizētājs
+    else:                                   #maksimizētājs
         max_eval = float('-inf')
         for pectec in loku_kopa[virsotnu_kopa[index].id]:
-            eval = alfabeta(virsotnu_kopa, loku_kopa, int(pectec[1:]) - 1, alpha, beta)
+            eval = alfabeta(virsotnu_kopa, loku_kopa, int(pectec[1:])-1, alpha, beta)
             max_eval = max(max_eval, eval)
             alpha = max(alpha, eval)
             if beta <= alpha:
                 break  # Beta nogriešana
         virsotnu_kopa[index].virs_kval = max_eval
         return max_eval
-
-# alfabeta(sp.virsotnu_kopa, sp.loku_kopa, 0, float('-inf'), float('inf'))
+    
+#alfabeta(sp.virsotnu_kopa, sp.loku_kopa, 0, float('-inf'), float('inf'))
