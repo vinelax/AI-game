@@ -84,12 +84,11 @@ def game():
     def new_game():
         global numbers_list
         numbers_list = []
-        # Ensure OK button is properly placed each time a new game is started.
-        ok_button.pack(after=num_input)  # Adjust placement here if necessary.
+        ok_button.pack(after=num_input)  
         player_points = [80, 80]
         winner_label.config(text="Uzvarētājs:")
         num_input.config(state="normal")
-        num_input.delete(0, tk.END)  # Clearing the input field
+        num_input.delete(0, tk.END)  
         player_input.config(state="disabled")
         numbers_label.config(text="")
         player1_points_label.config(text="Lietotājs punkti: 80")
